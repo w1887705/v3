@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login – Math Mayhem</title>
+  <link rel="stylesheet" href="{% static 'ribbongame/ribbon_game_v3.css' %}">
+  <style>
+    .login-box {max-width:420px; margin:0 auto;}
+    label {display:block; margin-top:8px; font-size:.9rem;}
+    input {width:100%; padding:8px; border-radius:8px; border:1px solid #ffd1e3; margin-top:4px;}
+    .help {font-size:.85rem; color:#555;}
+  </style>
+</head>
+<body>
+  <div class="page login-box">
+    <h1>🔐 Login</h1>
+    <p class="intro">Welcome to Math Mayhem! Please log in.</p>
+
+    {% if messages %}
+  <section class="box">
+    {% for message in messages %}
+      <p style="margin:0; font-weight:700; color:#1a8b3b;">{{ message }}</p>
+    {% endfor %}
+  </section>
+{% endif %}
+
+<section class="box">
+      <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <label for="id_username">Username</label>
+        {{ form.username }}
+        <label for="id_password">Password</label>
+        {{ form.password }}
+        <div style="margin-top:12px;">
+          <button type="submit">Login</button>
+        </div>
+      </form>
+      <p class="help" style="margin-top:10px;">
+        Demo student account: <strong>demochild</strong> / <strong>demo12345</strong>
+      </p>
+    </section>
+  </div>
+</body>
+</html>

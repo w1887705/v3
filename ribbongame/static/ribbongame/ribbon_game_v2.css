@@ -1,0 +1,680 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #ffe9f0;
+}
+
+.page {
+    max-width: 1400px;
+    margin: 24px auto;
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+/* ------------------- PROGRESS BAR ------------------- */
+.progress-bar {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+}
+
+.progress-label {
+    font-weight: bold;
+    color: #b3214c;
+}
+
+.progress-chunk {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 18px;
+    border-radius: 6px;
+    border: 1px solid #ffd1e3;
+    background: #fffafc;
+    font-size: 0.7rem;
+    color: #b3214c;
+}
+
+.progress-chunk.filled {
+    background: #cc2b5e;
+    color: #fff;
+}
+
+/* ------------------- HEADERS & BOXES ------------------- */
+h1 {
+    margin-top: 16px;
+    text-align: center;
+    color: #cc2b5e;
+}
+
+.intro {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.box {
+    border: 1px solid #ffd1e3;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    background: #fffafc;
+}
+
+.box h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: #b3214c;
+}
+
+/* ------------------- TOP RIBBON ------------------- */
+.ribbon-long {
+    height: 32px;
+    background: linear-gradient(90deg, #ff5f6d, #ffc371);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* ------------------- BUTTONS ------------------- */
+button {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: none;
+    background: #cc2b5e;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+button.secondary {
+    background: #f7d1e6;
+    color: #b3214c;
+}
+
+button:hover {
+    background: #b0214e;
+}
+
+button.secondary:hover {
+    background: #e8b4d3;
+}
+
+/* ------------------- DRAG & DROP (SCENARIO 1) ------------------- */
+.build-strip {
+    width: 100%;
+    height: 32px;
+    border-radius: 16px;
+    background: #ffeef6;
+    border: 2px dashed #ffd1e3;
+    overflow: hidden;
+
+    display: flex;
+    align-items: stretch;
+}
+
+.pool-area {
+    min-height: 40px;
+    border-radius: 10px;
+    border: 2px dashed #ffd1e3;
+    background: #fff8fd;
+    padding: 4px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+/* Ribbon pieces (Scenario 1) */
+.piece {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    color: #fff;
+    font-size: 0.8rem;
+    cursor: grab;
+    user-select: none;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+.piece.large {
+    background: linear-gradient(90deg, #ff5f6d, #ffc371);
+}
+
+.piece.medium {
+    background: linear-gradient(90deg, #ffcf64, #ffd992);
+}
+
+.piece.small {
+    background: linear-gradient(90deg, #7ed6ff, #a5e4ff);
+}
+
+.feedback {
+    min-height: 1.2em;
+}
+
+.feedback.ok {
+    color: #1a8b3b;
+}
+
+.feedback.error {
+    color: #cc2b5e;
+}
+
+.next-task-row {
+    margin-top: 6px;
+}
+
+.next-task.hidden {
+    display: none;
+}
+
+/* ------------------- SCENARIO 2 — COMPARE BOWS ------------------- */
+.compare-row {
+    display: grid;
+    grid-template-columns: 120px 1.1fr 1.6fr;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 0.9rem;
+}
+
+.compare-row:first-of-type {
+    grid-template-columns: 120px 1fr;
+}
+
+.compare-label {
+    font-weight: bold;
+}
+
+/* Base strip background */
+.compare-strip {
+    width: 100%;
+    height: 26px;
+    background: #ffeef6;
+    border-radius: 13px;
+    border: 2px dashed #ffd1e3;
+    display: flex;
+    overflow: hidden;
+}
+
+/* Bow pieces inside compare area */
+.compare-piece {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.8rem;
+    border-radius: 13px;
+    flex: 0 0 auto;
+}
+
+/* Correct TRUE-SCALE widths relative to 120cm */
+.compare-piece.base {
+    background: linear-gradient(90deg, #ff5f6d, #ffc371);
+    flex-basis: calc(30 / 120 * 100%);   /* 25% */
+}
+
+.compare-piece.smaller {
+    background: linear-gradient(90deg, #ffcf64, #ffd992);
+    flex-basis: calc(15 / 120 * 100%);}
+
+
+
+/* =========================
+   Task 10 (visual, no measurements)
+   ========================= */
+
+.task10-layout{
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.side-progress{
+  position: sticky;
+  top: 14px;
+  border: 1px solid #cfe6ff;
+  background: #f3f9ff;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.06);
+}
+
+.side-title{
+  font-weight: 800;
+  color: #0b4f7a;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.side-step{
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  background: #ffffff;
+  border: 1px solid #d7ecff;
+}
+
+.side-step .dot{
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #b7d9ff;
+  border: 2px solid #8cc4ff;
+}
+
+.side-step .label{
+  font-weight: 700;
+  color: #0b4f7a;
+}
+
+.side-step .mini{
+  font-size: 0.75rem;
+  color: #3c6b88;
+}
+
+.side-step.active{
+  outline: 2px solid #5aa8ff;
+  background: #e9f4ff;
+}
+
+.side-step.active .dot{
+  background: #5aa8ff;
+  border-color: #2f7fe0;
+}
+
+.side-step.done .dot{
+  background: #2ecc71;
+  border-color: #1fa85b;
+}
+
+.side-foot{
+  margin-top: 10px;
+}
+
+.side-bar{
+  height: 10px;
+  border-radius: 999px;
+  background: #dfefff;
+  overflow: hidden;
+}
+
+.side-fill{
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #5aa8ff, #2ecc71);
+}
+
+.side-text{
+  text-align: center;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #0b4f7a;
+  font-weight: 700;
+}
+
+.task-area .box{ margin-bottom: 14px; }
+
+.stage-title{
+  font-weight: 800;
+  color: #0b4f7a;
+  margin-top: 0;
+}
+
+.stack-area{
+  display: grid;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.solid-wrap{
+  display: grid;
+  gap: 6px;
+}
+
+.solid-label{
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0b4f7a;
+}
+
+.build-wrap{
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.build-label{
+  font-weight: 800;
+  color: #0b4f7a;
+}
+
+.zone-meter{
+  font-size: 0.85rem;
+  color: #3c6b88;
+  font-weight: 700;
+}
+
+.build-strip.zone{
+  width: 100%;
+  height: 44px;
+  border-radius: 22px;
+  background: #f7fbff;
+  border: 2px dashed #9fd1ff;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+}
+
+.build-strip.solidified{
+  width: 100%;
+  height: 44px;
+  border-radius: 22px;
+  background: #f7fbff;
+  border: 2px solid #9fd1ff;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+}
+
+.build-strip.solidified:not(.inactive){
+  box-shadow: 0 0 0 3px rgba(90,168,255,0.25);
+}
+
+.build-strip.solidified.inactive{
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.ribbon-long.inactive{
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.zone-slot{
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  box-sizing: border-box;
+  border-right: 1px solid rgba(159,209,255,0.55);
+}
+
+.zone-slot:last-child{ border-right: none; }
+
+.zone-slot.empty{
+  background: rgba(230,245,255,0.55);
+}
+
+.zone-slot:not(.empty){
+  background: transparent;
+}
+
+.piece.stage-piece{
+  height: 100%;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #2f7fe0, #5aa8ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.95);
+  font-weight: 800;
+  font-size: 0.75rem;
+  cursor: grab;
+  user-select: none;
+}
+
+.piece.stage-piece.snapped{
+  animation: popIn 0.22s ease-out;
+}
+
+.solid-piece{
+  background: linear-gradient(90deg, #2f7fe0, #5aa8ff) !important;
+  opacity: 0.95;
+}
+
+.pool-area{
+  min-height: 48px;
+}
+
+.next-task{
+  margin-top: 8px;
+}
+
+@media (max-width: 860px){
+  .task10-layout{
+    grid-template-columns: 190px 1fr;
+  }
+  .side-progress{
+    position: static;
+    order: -1;
+  }
+}
+
+
+
+/* ===== Task 10 sidebar progress bar (non-sticky, out of the way) ===== */
+.task10-layout{
+  grid-template-columns: 190px 1fr; /* slimmer left column */
+}
+
+.side-progress{
+  position: static;           /* stop sticking/covering content */
+  top: auto;
+  width: 170px;
+  padding: 12px 10px;
+}
+
+.bar-wrap{
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: stretch;
+  margin-top: 10px;
+}
+
+.bar-track{
+  width: 18px;
+  height: 220px;
+  border-radius: 999px;
+  background: #dfefff;
+  overflow: hidden;
+  border: 1px solid #cfe6ff;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bar-fill{
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(180deg, #2ecc71, #5aa8ff);
+}
+
+.bar-chunks{
+  height: 220px;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  gap: 10px;
+  padding: 2px 0;
+}
+
+.chunk{
+  border-radius: 12px;
+  border: 1px solid #cfe6ff;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px rgba(90,168,255,0.08);
+}
+
+.chunk.filled{
+  background: #e9fff2;
+  box-shadow: inset 0 0 0 3px rgba(46,204,113,0.22);
+}
+
+.chunk.active{
+  outline: 2px solid #5aa8ff;
+}
+
+.bar-labels{
+  margin-top: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.bar-row{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 22px;
+  border-radius: 999px;
+  background: #e9f4ff;
+  border: 1px solid #cfe6ff;
+  font-weight: 800;
+  color: #0b4f7a;
+  font-size: 0.8rem;
+}
+
+.bar-row .txt{
+  font-size: 0.8rem;
+  color: #3c6b88;
+  font-weight: 700;
+}
+
+/* Pool pieces as big grab-friendly tiles */
+.piece.stage-piece{
+  border-radius: 12px;
+}
+
+/* On very small screens, sidebar becomes top bar so it never overlaps */
+@media (max-width: 860px){
+  .task10-layout{ grid-template-columns: 190px 1fr; }
+  .side-progress{ width: 100%; }
+  .bar-wrap{ grid-template-columns: 28px 1fr; }
+}
+
+/* ===== Wider activity area support for 48 pieces ===== */
+.stack-area,
+.build-wrap{
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+/* ===== AUTOFILL DROPANYWHERE (supports 36/48 pieces) ===== */
+#activeBar.auto-box, #activeBar.build-strip.zone{
+  min-height: 120px;        /* grows as pieces wrap */
+  height: auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 6px;
+  gap: 2px;
+  border-radius: 14px;
+}
+
+/* ensure our active bar is wrap-friendly */
+.build-strip.zone{
+  min-height: 120px;
+  height: auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 6px;
+  gap: 2px;
+  border-radius: 14px;
+}
+
+/* pieces inside the build box become small “fill segments” */
+.segment-piece{
+  border-radius: 10px !important;
+  cursor: pointer;
+}
+
+/* solidified bars also wrap nicely */
+.build-strip.solidified.auto-box{
+  min-height: 92px;
+  height: auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 6px;
+  gap: 2px;
+  border-radius: 14px;
+}
+
+
+
+/* ===== Slim but growing build box (fix for 36/48) ===== */
+.build-strip.zone{
+  width: 100%;
+  max-width: 100%;
+  min-width: 0 !important;
+  min-height: 44px;
+  height: auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 6px;
+  gap: 2px;
+  border-radius: 14px;
+}
+
+.build-strip.solidified.auto-box{
+  width: 100%;
+  max-width: 100%;
+  min-width: 0 !important;
+  min-height: 44px;
+  height: auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 6px;
+  gap: 2px;
+  border-radius: 14px;
+}
+
+
+
+/* ===== Make the build box SLIM by default (but still grows when needed) ===== */
+#activeBar.build-strip.zone{
+  min-height: 34px !important;   /* slim like the ribbon bar */
+  padding: 2px !important;
+  gap: 2px !important;
+  border-radius: 16px !important;
+}
+
+.build-strip.solidified.auto-box{
+  min-height: 34px !important;   /* slim like the ribbon bar */
+  padding: 2px !important;
+  gap: 2px !important;
+  border-radius: 16px !important;
+}
+
+/* Make each little piece slimmer so rows don't look chunky */
+#activeBar .piece.segment-piece,
+.build-strip.solidified.auto-box .piece.segment-piece{
+  height: 22px !important;
+  border-radius: 11px !important;
+}

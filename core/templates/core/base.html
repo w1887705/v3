@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Math Mayhem{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'ribbongame/ribbon_game_v3.css' %}">
+  <style>
+
+    /* Difficulty buttons (Homepage) */
+    .difficulty-wrap {display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:8px 0 2px;}
+    .difficulty-buttons {display:flex; gap:8px; flex-wrap:wrap;}
+    .diff-btn {display:inline-flex; align-items:center; justify-content:center; padding:6px 12px; border-radius:999px;
+              border:1px solid #cfe6ff; background:#f3f9ff; color:#0b4f7a; text-decoration:none; font-size:.85rem;
+              transition: transform .08s ease, box-shadow .08s ease;}
+    .diff-btn:hover {transform: translateY(-1px); box-shadow:0 4px 10px rgba(0,0,0,.08);}
+    .diff-btn.active {background:#22c55e; border-color:#22c55e; color:#fff;}
+
+    /* Small additions for platform pages (keeps your child-friendly theme) */
+    .topbar {display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px;}
+    .brand {font-weight:800; color:#cc2b5e; text-decoration:none; font-size:1.1rem;}
+    .nav {display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+    .pill {background:#fffafc; border:1px solid #ffd1e3; border-radius:999px; padding:6px 10px; font-size:.85rem;}
+    .progress-wrap {display:flex; gap:8px; align-items:center; margin:10px 0 14px;}
+    .progress-track {flex:1; height:14px; border-radius:999px; background:#ffeef6; border:1px solid #ffd1e3; overflow:hidden;}
+    .progress-fill {height:100%; width:{{ percent|default:0 }}%; background:#cc2b5e;}
+    .task-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .task-card {border:1px solid #ffd1e3; background:#fffafc; border-radius:12px; padding:10px;}
+    .task-title {margin:0 0 6px; color:#b3214c;}
+    .task-meta {font-size:.85rem; color:#555; margin:0 0 10px;}
+    .task-actions {display:flex; justify-content:space-between; align-items:center; gap:8px;}
+    .badge {display:inline-flex; align-items:center; justify-content:center; padding:3px 8px; border-radius:999px; font-size:.75rem; border:1px solid #ffd1e3; background:#fff;}
+    .badge.done {background:#e9fff0; border-color:#b9f0c9; color:#1a8b3b;}
+    .badge.todo {background:#fff; color:#b3214c;}
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <a class="brand" href="{% url 'core:tasks' %}">🧠 Math Mayhem</a>
+      <div class="nav">
+        <span class="pill">Hello, {{ request.user.username }}!</span>
+        <a class="pill" href="{% url 'core:tasks' %}">🏠 Home</a>
+        <a class="pill" href="{% url 'logout' %}">🚪 Logout</a>
+      </div>
+    </div>
+
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

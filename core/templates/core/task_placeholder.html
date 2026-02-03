@@ -1,0 +1,11 @@
+{% extends "core/base.html" %}
+{% block title %}Task {{ task.order }} – In Construction{% endblock %}
+{% block content %}
+  <h1>🚧 Task {{ task.order }} is in construction</h1>
+  <p class="intro">This task is planned, but not built yet in the IPD prototype.</p>
+  <section class="box">
+    <h2>What will be here?</h2>
+    <p>This page is a placeholder for future interactive scenarios from the scenario document.</p>
+    <a href="{% url 'core:tasks' %}"><button class="secondary">Back to tasks</button></a>
+  </section>
+{% endblock %}

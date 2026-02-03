@@ -1,0 +1,52 @@
+{% extends "core/base.html" %}
+{% block title %}Home – Math Mayhem{% endblock %}
+{% block content %}
+  <h1>🎮 Choose a task</h1>
+  <p class="intro">Pick a fun maths challenge! Your progress is saved.</p>
+
+  <div class="difficulty-wrap">
+    <span class="pill">Difficulty:</span>
+    <div class="difficulty-buttons">
+      <a class="diff-btn {% if difficulty == 'easy' %}active{% endif %}" href="?difficulty=easy">Easy</a>
+      <a class="diff-btn {% if difficulty == 'medium' %}active{% endif %}" href="?difficulty=medium">Medium</a>
+      <a class="diff-btn {% if difficulty == 'hard' %}active{% endif %}" href="?difficulty=hard">Hard</a>
+      <a class="diff-btn {% if difficulty == 'all' %}active{% endif %}" href="?difficulty=all">All</a>
+    </div>
+  </div>
+
+
+  <div class="progress-wrap">
+    <span class="pill">Progress: {{ completed_count }}/{{ total }}</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span class="pill">{{ percent }}%</span>
+  </div>
+
+  <div class="task-grid">
+    {% for item in items %}
+      <div class="task-card">
+        {% if item.task.slug == "task-10-ribbon" %}
+          <h3 class="task-title">{{ item.task.order }}. {{ item.task.title }}</h3>
+        {% else %}
+          <h3 class="task-title">{{ item.task.order }}.</h3>
+        {% endif %}
+        <p class="task-meta">
+          {% if item.task.slug == "task-10-ribbon" %}
+            Interactive ribbon building + comparing sizes.
+          {% else %}
+            Coming soon in the final build.
+          {% endif %}
+        </p>
+        <div class="task-actions">
+          {% if item.completed %}
+            <span class="badge done">✅ Completed</span>
+          {% else %}
+            <span class="badge todo">⏳ Not done</span>
+          {% endif %}
+          <a href="{% url 'core:task_detail' item.task.slug %}">
+            <button>Play</button>
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

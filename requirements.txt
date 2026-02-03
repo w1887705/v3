@@ -1,0 +1,13 @@
+Django>=5.2
+
+# Production server
+gunicorn>=22.0
+
+# Serve static files on Render without an extra CDN
+whitenoise>=6.7
+
+# Database URL parsing (Render Postgres)
+dj-database-url>=2.2
+
+# Postgres driver (safe for Render)
+psycopg2-binary>=2.9

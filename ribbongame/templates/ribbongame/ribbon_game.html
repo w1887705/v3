@@ -1,0 +1,376 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task 10 – Ribbons</title>
+  <link rel="stylesheet" href="{% static 'ribbongame/ribbon_game_v3.css' %}">
+</head>
+<body>
+<div class="page">
+
+  <div class="top-row">
+    <a class="home-btn" href="/">🏠 Home</a>
+    <h1 class="title">🎀 Ribbon Builder</h1>
+  </div>
+
+  <p class="intro">
+    Fill the box with ribbon pieces. Watch what happens when pieces get smaller… and then bigger!
+  </p>
+
+  <div class="task10-layout">
+
+    <!-- LEFT: progress -->
+    <aside class="side-progress" aria-label="Progress">
+      <div class="side-title">Progress</div>
+
+      <div class="bar-wrap" aria-hidden="true">
+        <div class="bar-track">
+          <div id="sideFill" class="bar-fill" style="height: 0%"></div>
+        </div>
+
+        <div class="bar-chunks">
+          <div class="chunk" data-idx="0"></div>
+          <div class="chunk" data-idx="1"></div>
+          <div class="chunk" data-idx="2"></div>
+          <div class="chunk" data-idx="3"></div>
+          <div class="chunk divider" aria-hidden="true"></div>
+          <div class="chunk" data-idx="4"></div>
+          <div class="chunk" data-idx="5"></div>
+          <div class="chunk" data-idx="6"></div>
+          <div class="chunk" data-idx="7"></div>
+        </div>
+      </div>
+
+      <div class="part-labels">
+        <div class="part-pill">Part A</div>
+        <div class="part-pill">Part B</div>
+      </div>
+
+      <div id="sideText" class="side-text">Part A</div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="task-area">
+
+      <section class="box">
+        <h2>The ribbon to copy</h2>
+        <p class="tiny-text">This is the ribbon we are copying.</p>
+        <div id="originalRibbon" class="ribbon-long">
+          <span>Ribbon</span>
+        </div>
+      </section>
+
+      <section class="box">
+        <h2>Build the same ribbon</h2>
+
+        <p id="stageTitle" class="stage-title"></p>
+
+        <div class="controls-row">
+          <button id="createBtn">Create piece</button>
+          <button id="clearBtn" class="secondary">Clear pieces</button>
+          <button id="checkBtn">Check</button>
+        </div>
+
+        <p class="tiny-text">
+          Drag pieces into the box. (Tip: Click a piece in the box to send it back.)
+        </p>
+
+        <!-- Solidified reference bars appear here -->
+        <div id="stackArea" class="stack-area"></div>
+
+        <!-- Active build box -->
+        <div class="build-wrap">
+          <div class="build-label">Drop pieces here</div>
+          <div id="activeBar" class="build-strip zone" aria-label="Drop pieces here"></div>
+          <p id="feedback" class="feedback"></p>
+          <button id="nextBtn" class="next-task hidden">Next</button>
+        </div>
+
+        <!-- Pool -->
+        <div class="pool-wrapper">
+          <h3>Pieces</h3>
+          <div id="poolArea" class="pool-area"></div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Part A: pieces get smaller → you need more
+  const PART_A = [12, 24, 36, 48];
+
+  // Part B: pieces get bigger → you need fewer
+  const PART_B = [12, 6, 4, 3];
+
+  const STAGES = [...PART_A, ...PART_B]; // 8 stages total
+  let stageIndex = 0;
+
+  const poolArea = document.getElementById("poolArea");
+  const activeBar = document.getElementById("activeBar");
+  const feedback = document.getElementById("feedback");
+  const nextBtn = document.getElementById("nextBtn");
+  const stageTitle = document.getElementById("stageTitle");
+  const stackArea = document.getElementById("stackArea");
+  const originalRibbon = document.getElementById("originalRibbon");
+
+  const sideFill = document.getElementById("sideFill");
+  const sideText = document.getElementById("sideText");
+
+  let pieceCounter = 0;
+
+  function isPartA() {
+    return stageIndex < PART_A.length;
+  }
+
+  function stageTarget() {
+    return STAGES[stageIndex];
+  }
+
+  function setStageText() {
+    // Do NOT show the number of pieces the child needs.
+    if (isPartA()) {
+      stageTitle.textContent = "Part A: Pieces are getting smaller. Fill the box!";
+      sideText.textContent = "Part A";
+    } else {
+      stageTitle.textContent = "Part B: Pieces are getting bigger. Fill the box!";
+      sideText.textContent = "Part B";
+    }
+  }
+
+  function setProgress() {
+    const done = stageIndex; // completed stages
+    const pct = (done / STAGES.length) * 100;
+    sideFill.style.height = pct + "%";
+
+    const chunks = Array.from(document.querySelectorAll(".chunk[data-idx]"));
+    chunks.forEach((c, i) => {
+      c.classList.toggle("filled", i < done);
+      c.classList.toggle("active", i === done);
+    });
+  }
+
+  function clearFeedbackSoft() {
+    feedback.textContent = "";
+    feedback.className = "feedback";
+    nextBtn.classList.add("hidden");
+  }
+
+  function poolStyle(piece) {
+    piece.style.width = "84px";
+    piece.style.height = "34px";
+    piece.style.flex = "0 0 84px";
+    piece.textContent = "piece";
+    piece.classList.remove("segment-piece");
+  }
+
+  function barStyle(piece) {
+    // Auto-fit based on hidden correct answer. If they add too many, it wraps to next row (looks wrong).
+    const n = stageTarget();
+    const w = 100 / n;
+    piece.style.width = `calc(${w}% - 2px)`;
+    piece.style.height = "22px";
+    piece.style.flex = "0 0 auto";
+    piece.textContent = "";
+    piece.classList.add("segment-piece");
+  }
+
+  function getLivePieceById(id) {
+    return document.querySelector(`.piece.stage-piece[data-id="${id}"]`);
+  }
+
+  function createPiece() {
+    const piece = document.createElement("div");
+    piece.className = "piece stage-piece";
+    piece.dataset.id = "p-" + (pieceCounter++);
+    piece.draggable = true;
+
+    poolStyle(piece);
+
+    piece.addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", piece.dataset.id);
+    });
+
+    // click-to-return (kid friendly)
+    piece.addEventListener("click", () => {
+      if (piece.parentElement === activeBar) {
+        poolArea.appendChild(piece);
+        poolStyle(piece);
+        clearFeedbackSoft();
+      }
+    });
+
+    poolArea.appendChild(piece);
+  }
+
+  function countInBar() {
+    return activeBar.querySelectorAll(".piece.stage-piece").length;
+  }
+
+  function clearPieces() {
+    const pieces = Array.from(activeBar.querySelectorAll(".piece.stage-piece"));
+    pieces.forEach(p => {
+      poolArea.appendChild(p);
+      poolStyle(p);
+    });
+    clearFeedbackSoft();
+  }
+
+  function checkStage() {
+    const filled = countInBar();
+    const target = stageTarget();
+
+    feedback.classList.remove("ok", "error");
+
+    if (filled === target) {
+      feedback.textContent = "✅ Great! The box looks perfectly full!";
+      feedback.classList.add("ok");
+      nextBtn.classList.remove("hidden");
+    } else if (filled === 0) {
+      feedback.textContent = "Press Create piece, then drag pieces into the box.";
+      feedback.classList.add("error");
+    } else if (filled < target) {
+      feedback.textContent = "Not full yet — keep adding pieces!";
+      feedback.classList.add("error");
+    } else {
+      feedback.textContent = "Too many pieces — try taking one out!";
+      feedback.classList.add("error");
+    }
+  }
+
+  function solidifyCurrentBar() {
+    const cloneWrap = document.createElement("div");
+    cloneWrap.className = "solid-wrap";
+
+    const label = document.createElement("div");
+    label.className = "solid-label";
+    label.textContent = isPartA()
+      ? "Your ribbon (smaller pieces)"
+      : "Your ribbon (bigger pieces)";
+
+    const cloneBar = document.createElement("div");
+    cloneBar.className = "build-strip solidified auto-box";
+
+    // Make visual-only clones (NO data-id) to avoid drag glitches
+    const pieces = Array.from(activeBar.querySelectorAll(".piece.stage-piece"));
+    const n = stageTarget();
+    const w = 100 / n;
+
+    pieces.forEach(() => {
+      const cp = document.createElement("div");
+      cp.className = "piece solid-piece segment-piece";
+      cp.style.width = `calc(${w}% - 2px)`;
+      cp.style.height = "22px";
+      cp.style.flex = "0 0 auto";
+      cloneBar.appendChild(cp);
+    });
+
+    cloneWrap.appendChild(label);
+    cloneWrap.appendChild(cloneBar);
+    stackArea.appendChild(cloneWrap);
+
+    // Grey out older solid bars except newest
+    const solids = stackArea.querySelectorAll(".build-strip.solidified");
+    solids.forEach((bar, idx) => {
+      bar.classList.toggle("inactive", idx !== solids.length - 1);
+    });
+
+    if (stageIndex === 0) {
+      originalRibbon.classList.add("inactive");
+    }
+  }
+
+  function startPartBReset() {
+    // Clean visual slate for the “opposite” lesson
+    stackArea.innerHTML = "";
+
+    const banner = document.createElement("div");
+    banner.className = "part-banner";
+    banner.textContent = "✨ Now the pieces get BIGGER, so you need fewer!";
+    stackArea.appendChild(banner);
+
+    originalRibbon.classList.remove("inactive");
+    clearPieces();
+    poolArea.innerHTML = "";
+    clearFeedbackSoft();
+  }
+
+  function nextStage() {
+    if (nextBtn.classList.contains("hidden")) return;
+
+    solidifyCurrentBar();
+
+    // Move live pieces back to pool
+    const barPieces = Array.from(activeBar.querySelectorAll(".piece.stage-piece"));
+    barPieces.forEach(p => {
+      poolArea.appendChild(p);
+      poolStyle(p);
+    });
+    activeBar.innerHTML = "";
+
+    stageIndex += 1;
+
+    // Part A → Part B transition
+    if (stageIndex === PART_A.length) {
+      startPartBReset();
+    }
+
+    if (stageIndex >= STAGES.length) {
+      poolArea.innerHTML = "";
+      activeBar.innerHTML = "";
+      feedback.textContent = "🎉 Finished! You learned: smaller = more, bigger = fewer!";
+      feedback.className = "feedback ok";
+      nextBtn.classList.add("hidden");
+      setProgress();
+      sideText.textContent = "Done!";
+      return;
+    }
+
+    setStageText();
+    setProgress();
+    clearFeedbackSoft();
+  }
+
+  // Drop anywhere into active box
+  activeBar.addEventListener("dragover", (e) => e.preventDefault());
+  activeBar.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("text/plain");
+    const piece = getLivePieceById(id);
+    if (!piece) return;
+
+    activeBar.appendChild(piece);
+    barStyle(piece);
+    clearFeedbackSoft();
+  });
+
+  // Drop back into pool
+  poolArea.addEventListener("dragover", (e) => e.preventDefault());
+  poolArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("text/plain");
+    const piece = getLivePieceById(id);
+    if (!piece) return;
+
+    poolArea.appendChild(piece);
+    poolStyle(piece);
+    clearFeedbackSoft();
+  });
+
+  // Buttons
+  document.getElementById("createBtn").addEventListener("click", createPiece);
+  document.getElementById("clearBtn").addEventListener("click", clearPieces);
+  document.getElementById("checkBtn").addEventListener("click", checkStage);
+  nextBtn.addEventListener("click", nextStage);
+
+  // Init
+  setStageText();
+  setProgress();
+})();
+</script>
+</body>
+</html>
