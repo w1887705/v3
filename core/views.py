@@ -12,22 +12,22 @@ def _seed_tasks_if_needed() -> None:
     if Task.objects.exists():
         return
     titles = [
-        "Giannis multiplies fractions",
-        "Maria’s division rule",
-        "Half a kilo problem",
-        "Fix the chart",
-        "Shade the fraction product",
-        "What is 2/5 of 30?",
-        "Division as measurement match",
-        "Variable divisor method",
-        "What do students need first?",
-        "Ribbon bows",
-        "What maths is in Task 10?",
-        "120 cm ribbon division",
-        "Change the unit, find a rule",
-        "Times three / divide by three",
-        "Explaining division by 1/3",
-        "Is 3 ÷ 5/10 really 6?",
+         "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "Ribbon bows",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
     ]
     for i, title in enumerate(titles, start=1):
         slug = f"task-{i}"
