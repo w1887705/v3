@@ -4,6 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: "bash build.sh"
+    preDeployCommand: "python manage.py migrate && python manage.py seed_demo"
     startCommand: "gunicorn task10_project.wsgi:application"
     envVars:
       - key: SECRET_KEY
